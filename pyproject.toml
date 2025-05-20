@@ -1,7 +1,45 @@
 [project]
-name = "devcontainer-python-template"
+name = "dockcheck"
 version = "0.1.0"
-description = "Add your description here"
+description = "Analyze the dockerfile"
 readme = "README.md"
+license = { file = "LICENSE" }
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["typer>=0.15.4"]
+
+[dependency-groups]
+dev = ["pre-commit>=4.2.0", "ruff>=0.11.10"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle errors
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
+
+]
+ignore = [
+    "E501", # line too long
+    "C901", # too complex
+
+]
+
+[tool.ruff.lint.isort]
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+extra-standard-library = ["typing"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]

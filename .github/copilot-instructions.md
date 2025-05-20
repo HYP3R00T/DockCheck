@@ -1,5 +1,12 @@
 # Project coding standards
 
+## General Guidelines
+
+- Prioritize **type safety** throughout the project.
+- Use modern Python practices and avoid deprecated modules.
+- Make code **modular and readable**.
+- Prefer pure functions unless state is required.
+
 ## Naming Conventions
 
 - Use PascalCase for component names, interfaces, and type aliases
@@ -14,3 +21,9 @@
 - Include proper status codes
 - Handle database errors gracefully
 - Log errors with appropriate severity levels
+
+## Testing
+
+- All parsing logic should have corresponding unit tests
+- Use `pytest`.
+- Avoid test code in main modules — separate test files in `/tests`
