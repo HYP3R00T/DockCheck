@@ -10,7 +10,8 @@
                 "charliermarsh.ruff",
                 "DavidAnson.vscode-markdownlint",
                 "tamasfe.even-better-toml",
-                "qwtel.sqlite-viewer"
+                "qwtel.sqlite-viewer",
+                "redhat.vscode-yaml"
             ]
         }
     },
