@@ -1,11 +1,11 @@
 [project]
 name = "dockcheck"
-version = "0.1.0"
-description = "Analyze the dockerfile"
+version = "0.1.1"
+description = "Your Dockerfile's best friend: analyze, lint, and optimize with ease."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
-dependencies = ["lark>=1.2.2", "typer>=0.15.4"]
+dependencies = ["typer>=0.15.4"]
 authors = [{ name = "Rajesh", email = "rajesh@hyperoot.dev" }]
 classifiers = [
     "Programming Language :: Python :: 3",
