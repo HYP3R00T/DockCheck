@@ -3,18 +3,26 @@ name = "dockcheck"
 version = "0.1.0"
 description = "Analyze the dockerfile"
 readme = "README.md"
-license = { file = "LICENSE" }
-requires-python = ">=3.13"
-dependencies = [
-    "lark>=1.2.2",
-    "typer>=0.15.4",
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = ["lark>=1.2.2", "typer>=0.15.4"]
+authors = [{ name = "Rajesh", email = "rajesh@hyperoot.dev" }]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
 ]
 
-[dependency-groups]
+[project.optional-dependencies]
 dev = [
     "pre-commit>=4.2.0",
- "pytest>=8.3.5",
- "ruff>=0.11.10",
+    "pytest>=8.3.5",
+    "ruff>=0.11.10",
+    "bumpver>=2023.1129",
 ]
 
 [project.scripts]
@@ -34,12 +42,10 @@ select = [
     "I", # isort
     "C", # flake8-comprehensions
     "B", # flake8-bugbear
-
 ]
 ignore = [
     "E501", # line too long
     "C901", # too complex
-
 ]
 
 [tool.ruff.lint.isort]
