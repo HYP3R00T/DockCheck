@@ -1,0 +1,16 @@
+[bumpver]
+current_version = "0.1.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit = false
+tag = false
+
+# Files to update
+files = [
+    "pyproject.toml",
+]
+
+# Search/replace patterns for pyproject.toml
+[bumpver.file_patterns]
+"pyproject.toml" = [
+    ["version = \"{version}\"", "version = \"{new_version}\""],
+]
