@@ -6,6 +6,7 @@ from typing import Annotated
 import typer
 import yaml
 
+from app.analyzer import analyze_instructions
 from app.parser import parse_dockerfile
 
 app = typer.Typer()
@@ -17,7 +18,7 @@ def executor(
     analyze: Annotated[bool, typer.Option("-a", "--analyze", help="Run detailed instruction-level analysis")] = False,
     parse: Annotated[bool, typer.Option("-p", "--parse", help="Parse and output the Dockerfile")] = False,
     parse_output: Annotated[
-        str,  # Changed from Literal to str for compatibility
+        str,
         typer.Option(
             "--output",
             "-o",
@@ -29,6 +30,12 @@ def executor(
 ):
     if analyze:
         typer.echo(f"Running analysis on: {dockerfile}")
+        parse_data = parse_dockerfile(dockerfile)
+        issues = analyze_instructions(parse_data)
+        if not issues:
+            typer.echo("✅ No issues found.")
+        else:
+            typer.echo(json.dumps(issues, indent=2))
     if parse:
         output_format = parse_output.lower()
         if output_format not in ("json", "yaml"):
