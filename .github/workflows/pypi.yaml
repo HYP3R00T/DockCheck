@@ -1,48 +1,43 @@
 name: Build and Release
 
 on:
-  push:
-    branches:
-    - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch:
-
 
 jobs:
   build:
     # if: startsWith(github.event.head_commit.message, 'pub')
     runs-on: ubuntu-latest
     steps:
-    # Check out the repository with full history for version detection
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        persist-credentials: true
+      # Check out the repository with full history for version detection
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
-    # Set up uv
-    - name: Install uv
-      uses: astral-sh/setup-uv@v5
+      # Set up uv
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
-    # Set up Python using uv
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version-file: ".python-version"
+      # Set up Python using uv
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
 
-    # Install project dependencies (creates virtual environment at .venv)
-    - name: Install the project
-      run: uv sync --all-extras --dev
+      # Install project dependencies (creates virtual environment at .venv)
+      - name: Install the project
+        run: uv sync --all-extras --dev
 
-    # Patch version before build/publish
-    - name: Bump patch version with bumpver
-      run: uv pip install --system bumpver && bumpver update --patch --no-commit
+      # Build the distribution using uv
+      - name: Build package
+        run: uv build
 
-    # Build the distribution using uv
-    - name: Build package
-      run: uv build
-
-    # Publish to PyPI using uv
-    - name: Publish package to PyPI
-      env:
-        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-      run: uv publish --username __token__ --password $PYPI_TOKEN
+      # Publish to PyPI using uv
+      - name: Publish package to PyPI
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        run: uv publish --username __token__ --password $PYPI_TOKEN
