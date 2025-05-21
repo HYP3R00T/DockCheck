@@ -28,4 +28,7 @@
     "[yaml]": {
         "editor.defaultFormatter": "redhat.vscode-yaml"
     },
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    }
 }
