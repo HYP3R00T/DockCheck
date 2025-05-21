@@ -1,0 +1,84 @@
+# ---------- Stage 1: Base builder image ----------
+    FROM node:18-alpine AS builder
+    LABEL stage="builder"
+    MAINTAINER "Jane Doe <jane@example.com>"
+
+    # Set default shell for RUN
+    SHELL ["/bin/ash", "-eo", "pipefail"]
+
+    # Build-time variable
+    ARG BUILD_DATE
+    ARG BUILD_VERSION=0.1.0
+
+    # Embed build metadata
+    LABEL build.date=$BUILD_DATE                  \
+          build.version=$BUILD_VERSION
+
+    # Pre-fetch remote archive
+    ADD https://example.com/archive.tar.gz /tmp/
+
+    # Unpack and install dependencies
+    RUN mkdir -p /opt/app && \
+        tar -xzf /tmp/archive.tar.gz -C /opt/app
+
+    # ONBUILD trigger — when another Dockerfile uses this as a base,
+    # it will run this instruction in the child build.
+    ONBUILD COPY --chown=node:node . /opt/app
+
+    # Expose builder artifact directory as a volume (optional cache)
+    VOLUME ["/opt/app"]
+
+    # Switch to unprivileged user for build steps
+    USER node
+
+    # ---------- Stage 2: Final production image ----------
+    FROM python:3.10-slim
+    LABEL stage="final"
+    ARG APP_ENV=production
+    ENV APP_ENV=${APP_ENV}                        \
+        PYTHONUNBUFFERED=1                        \
+        PATH="/app/.venv/bin:$PATH"
+
+    # Create app user and group
+    RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+
+    # Set working directory
+    WORKDIR /app
+
+    # Copy source and built frontend from builder
+    COPY --from=builder /opt/app/frontend ./frontend
+    COPY requirements.txt ./
+
+    # Install Python dependencies
+    RUN python -m venv .venv && \
+        . .venv/bin/activate && \
+        pip install --no-cache-dir -r requirements.txt
+
+    # Copy application code
+    COPY . .
+
+    # Expose HTTP port
+    EXPOSE 8080
+
+    # Default stop signal
+    STOPSIGNAL SIGTERM
+
+    # Create data volume mount
+    VOLUME ["/app/data"]
+
+    # Healthcheck to verify container is up
+    HEALTHCHECK --interval=30s --timeout=5s --start-period=5s \
+      CMD curl -f http://localhost:8080/health || exit 1
+
+    # Entrypoint script for initialization
+    COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+    RUN chmod +x /usr/local/bin/entrypoint.sh
+
+    # Switch to non-root for runtime
+    USER appuser
+
+    # Default executable (can be overridden)
+    ENTRYPOINT ["entrypoint.sh"]
+
+    # Default command (arguments to ENTRYPOINT)
+    CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080"]
