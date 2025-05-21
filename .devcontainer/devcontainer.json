@@ -11,7 +11,8 @@
                 "DavidAnson.vscode-markdownlint",
                 "tamasfe.even-better-toml",
                 "qwtel.sqlite-viewer",
-                "redhat.vscode-yaml"
+                "redhat.vscode-yaml",
+                "codezombiech.gitignore"
             ]
         }
     },
